@@ -63,7 +63,7 @@ Deleted [project2].
 `gcloud-mp` is written in Bash, so you should be able to install
 it to any POSIX environment that has Bash installed.
 
-1. Download the `gcloud-mp` script somewhere in your `PATH`, or add a symlink to a default `PATH` location (e.g. `/usr/local/bin`) and make it executable (`chmod +x gcloud-mp`)
+1. Download the `gcloud-mp` script somewhere in your `PATH` and make it executable
 ```bash
 sudo curl -L https://raw.githubusercontent.com/ogerbron/gcloud-mp/master/gcloud-mp -o /usr/local/bin/gcloud-mp
 sudo chmod +x /usr/local/bin/gcloud-mp
