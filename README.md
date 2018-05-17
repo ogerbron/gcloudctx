@@ -7,7 +7,6 @@ It is mainly based on a kubernetes bash tool named [kubectx](https://github.com/
 written by [ahmetb](https://github.com/ahmetb/). Thanks a lot for it! 
 
 **gcloudctx**
-![gcloud-mp demo GIF](img/gcloudctx-demo.gif)
 
 ### Usage
 ```
