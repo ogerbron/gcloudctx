@@ -1,10 +1,10 @@
-#compdef gcloud-mp
+#compdef gcloudctx
 
-local GCLOUDMP="${HOME}/.config/gcloud/gcloud-mp"
+local GCLOUDCTX="${HOME}/.config/gcloud/gcloudctx"
 PREV=""
-if [ -f "$GCLOUDMP" ]; then
+if [ -f "$GCLOUDCTX" ]; then
     # show '-' only if there's a saved previous context
-    local PREV=$(cat "${GCLOUDMP}")
+    local PREV=$(cat "${GCLOUDCTX}")
     _arguments "1: :((- \
         $(gcloud config configurations list --format="table(name)" | grep -v NAME)))"
 else

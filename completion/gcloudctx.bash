@@ -5,5 +5,5 @@ _gcloud_mp()
   COMPREPLY=( $(compgen -W "- $(gcloud config configurations list --format="table(name)" | grep -v NAME)" -- $curr_arg ) );
 }
 
-complete -F _gcloud_mp gcloud-mp
+complete -F _gcloud_mp gcloudctx
 

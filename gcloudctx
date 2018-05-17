@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# gcloud-mp(1) is a utility to manage and switch between gcloud projects.
+# gcloudctx(1) is a utility to manage and switch between gcloud projects.
 
 # Copyright 2018 Olivier Gerbron
 #
@@ -22,7 +22,7 @@ set -eou pipefail
 IFS=$'\n\t'
 
 GCLOUDCONF="${HOME}/.config/gcloud"
-GCLOUDMP="${GCLOUDCONF}/gcloud-mp"
+GCLOUDCTX="${GCLOUDCONF}/gcloudctx"
 
 YELLOW=$(tput setaf 3)
 DARKBG=$(tput setab 0)
@@ -31,16 +31,16 @@ NORMAL=$(tput sgr0)
 usage() {
   cat <<"EOF"
 USAGE:
-  gcloud-mp                   : list the projects
-  gcloud-mp <NAME>            : switch to project <NAME>
-  gcloud-mp -                 : switch to the previous project
-  gcloud-mp <NEW_NAME>=<NAME> : rename project <NAME> to <NEW_NAME>
-  gcloud-mp <NEW_NAME>=.      : rename current-project to <NEW_NAME>
-  gcloud-mp -d <NAME>         : delete project <NAME> ('.' for current-project)
+  gcloudctx                   : list the projects
+  gcloudctx <NAME>            : switch to project <NAME>
+  gcloudctx -                 : switch to the previous project
+  gcloudctx <NEW_NAME>=<NAME> : rename project <NAME> to <NEW_NAME>
+  gcloudctx <NEW_NAME>=.      : rename current-project to <NEW_NAME>
+  gcloudctx -d <NAME>         : delete project <NAME> ('.' for current-project)
                                 (this command won't delete the user/cluster entry
                                 that is used by the project)
 
-  gcloud-mp -h,--help         : show this message
+  gcloudctx -h,--help         : show this message
 EOF
   exit 1
 }
@@ -69,8 +69,8 @@ list_projects() {
 }
 
 read_project() {
-  if [[ -f "${GCLOUDMP}" ]]; then
-    cat "${GCLOUDMP}"
+  if [[ -f "${GCLOUDCTX}" ]]; then
+    cat "${GCLOUDCTX}"
   fi
 }
 
@@ -79,7 +79,7 @@ save_project() {
   saved="$(read_project)"
 
   if [[ "${saved}" != "${1}" ]]; then
-    printf %s "${1}" > "${GCLOUDMP}"
+    printf %s "${1}" > "${GCLOUDCTX}"
   fi
 }
 
