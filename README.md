@@ -1,4 +1,6 @@
 # gcloud-mp
+[![Build Status](https://travis-ci.org/ogerbron/gcloud-mp.svg?branch=master)](https://travis-ci.org/ogerbron/gcloud-mp/)
+
 gcloud-mp (gcloud Manage Project) is a tool to easily manage and switch between several gcloud project.
 
 It is mainly based on a kubernetes bash tool named [kubectx](https://github.com/ahmetb/kubectx/) 
