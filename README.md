@@ -63,8 +63,10 @@ Deleted [project2].
 `gcloud-mp` is written in Bash, so you should be able to install
 it to any POSIX environment that has Bash installed.
 
-1. Download the `gcloud-mp` script.
-2. Copy it somewhere in your `PATH`, or add a symlink to a default `PATH` location (e.g. `/usr/local/bin`).
-3. Make `gcloud-mp` executable (`chmod +x gcloud-mp`)
-4. Install bash/zsh/fish [completion scripts](completion/) (e.g. for Ubuntu, copy the scripts to `/etc/bash_completion.d/`
+1. Download the `gcloud-mp` script somewhere in your `PATH`, or add a symlink to a default `PATH` location (e.g. `/usr/local/bin`) and make it executable (`chmod +x gcloud-mp`)
+```bash
+sudo curl -L https://raw.githubusercontent.com/ogerbron/gcloud-mp/master/gcloud-mp -o /usr/local/bin/gcloud-mp
+sudo chmod +x /usr/local/bin/gcloud-mp
+```
+2. Install bash/zsh/fish [completion scripts](completion/) (e.g. for Ubuntu, copy the scripts to `/etc/bash_completion.d/`
 and restart your terminal)
