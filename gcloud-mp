@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# gcloud-mp(1) is a utility to manage and switch between gcloud projects. 
+# gcloud-mp(1) is a utility to manage and switch between gcloud projects.
 
-# Copyright 2017 Google Inc.
+# Copyright 2018 Olivier Gerbron
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
