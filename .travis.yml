@@ -1,0 +1,14 @@
+---
+language: python
+python: "2.7"
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install shellcheck -qq
+
+script:
+  # Syntax check
+  - "shellcheck -e SC2086,SC2039 -s sh gcloud-mp"
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
