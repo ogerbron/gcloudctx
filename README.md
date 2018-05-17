@@ -1,5 +1,5 @@
 # gcloud-mp
-gcloud-mp is a tool to easily manage and switch between several gcloud project.
+gcloud-mp (gcloud Manage Project) is a tool to easily manage and switch between several gcloud project.
 
 It is mainly based on a kubernetes bash tool named [kubectx](https://github.com/ahmetb/kubectx/) 
 written by [ahmetb](https://github.com/ahmetb/). Thanks a lot for it! 
