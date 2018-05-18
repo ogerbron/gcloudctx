@@ -24,6 +24,8 @@ IFS=$'\n\t'
 GCLOUDCONF="${HOME}/.config/gcloud"
 GCLOUDCTX="${GCLOUDCONF}/gcloudctx"
 
+FORCE_RENAME="false"
+
 YELLOW=$(tput setaf 3)
 DARKBG=$(tput setab 0)
 NORMAL=$(tput sgr0)
@@ -31,16 +33,19 @@ NORMAL=$(tput sgr0)
 usage() {
   cat <<"EOF"
 USAGE:
-  gcloudctx                   : list the projects
-  gcloudctx <NAME>            : switch to project <NAME>
-  gcloudctx -                 : switch to the previous project
-  gcloudctx <NEW_NAME>=<NAME> : rename project <NAME> to <NEW_NAME>
-  gcloudctx <NEW_NAME>=.      : rename current-project to <NEW_NAME>
-  gcloudctx -d <NAME>         : delete project <NAME> ('.' for current-project)
-                                (this command won't delete the user/cluster entry
-                                that is used by the project)
+  gcloudctx                              : list the projects
+  gcloudctx <NAME>                       : switch to project <NAME>
+  gcloudctx -                            : switch to the previous project
+  gcloudctx <NEW_NAME>=<NAME>            : rename project <NAME> to <NEW_NAME>
+  gcloudctx -f/--force <NEW_NAME>=<NAME> : force renaming of project <NAME> to <NEW_NAME>
+                                           when <NEW_NAME> already exists
 
-  gcloudctx -h,--help         : show this message
+  gcloudctx <NEW_NAME>=.                 : rename current-project to <NEW_NAME>
+  gcloudctx -d <NAME>                    : delete project <NAME> ('.' for current-project)
+                                           (this command won't delete the user/cluster entry
+                                           that is used by the project)
+
+  gcloudctx -h,--help                    : show this message
 EOF
   exit 1
 }
@@ -57,7 +62,6 @@ list_projects() {
   set -u pipefail
   local cur
   cur="$(current_project)"
-
 
   for c in $(get_projects); do
   if [[ -t 1 && "${c}" = "${cur}" ]]; then
@@ -121,11 +125,19 @@ rename_project() {
   fi
 
   if project_exists "${new_name}"; then
-    echo "Context \"${new_name}\" exists, deleting..." >&2
-    rm -f $GCLOUDCONF/configurations/config_${new_name} 1>/dev/null 2>&1
+    echo "Project name \"${new_name}\" already exists" >&2
+    if [[ "${FORCE_RENAME}" == "true" ]]; then
+      echo "Force renaming activated, removing former project \"${new_name}\"" >&2
+      rm -f $GCLOUDCONF/configurations/config_${new_name}
+    else
+      echo "Force renaming deactivated, use -f/--force to remove the existing project" >&2
+      echo "gcloudctx -f/--force <NEW_NAME>=<NAME>" >&2
+      exit 1
+    fi
   fi
-  cp $GCLOUDCONF/configurations/config_{${old_name},${new_name}}
-  echo "Aliased ${old_name} to ${DARKBG}${YELLOW}${new_name}${NORMAL}"
+  mv $GCLOUDCONF/configurations/config_{${old_name},${new_name}}
+  echo "Renamed ${old_name} to ${DARKBG}${YELLOW}${new_name}${NORMAL}" >&2
+  gcloud config configurations activate "${new_name}"
 }
 
 delete_project() {
@@ -141,34 +153,65 @@ delete_project() {
 main() {
   if [[ "$#" -eq 0 ]]; then
     list_projects
-  elif [[ "${1}" == "-d" ]]; then
-    if [[ "$#" -lt 2 ]]; then
-      echo "error: missing project NAME" >&2
-      usage
-    elif [[ "$#" -gt 2 ]]; then
-      echo "error: too many arguments" >&2
-      usage
-    fi
-    delete_project "${2}"
-  elif [[ "$#" -gt 1 ]]; then
-    echo "error: too many arguments" >&2
-    usage
-  elif [[ "$#" -eq 1 ]]; then
-    if [[ "${1}" == "-" ]]; then
-      swap_project
-    elif [[ "${1}" == '-h' || "${1}" == '--help' ]]; then
-      usage
-    elif [[ "${1}" =~ ^-(.*) ]]; then
-      echo "error: unrecognized flag \"${1}\"" >&2
-      usage
-    elif [[ "${1}" =~ (.+)=(.+) ]]; then
-      rename_project "${BASH_REMATCH[2]}" "${BASH_REMATCH[1]}"
-    else
-      set_project "${1}"
-    fi
-  else
-    usage
   fi
+
+  #Getting input args
+  while [[ $# -gt 0 ]]
+  do
+    case $1 in
+      --delete|-d)
+        shift
+        if [[ "$#" -lt 1 ]]; then
+          echo "error: missing project NAME" >&2
+          usage
+        elif [[ "$#" -gt 1 ]]; then
+          echo "error: too many arguments" >&2
+          usage
+        fi
+        delete_project "${1}"
+        break
+        ;;
+      --force|-f)
+        shift
+        FORCE_RENAME="true"
+        if [[ "$#" -lt 1 ]]; then
+          echo "error: missing project NAME" >&2
+          usage
+        elif [[ "$#" -gt 1 ]]; then
+          echo "error: too many arguments" >&2
+          usage
+        fi
+        ;;
+      *=*)
+        if [[ "${1}" =~ (.+)=(.+) ]]; then
+          rename_project "${BASH_REMATCH[2]}" "${BASH_REMATCH[1]}"
+        else
+          echo "Wrong syntax" >&2
+          usage
+        fi
+        break
+        ;;
+      -)
+        swap_project
+        break
+        ;;
+      -h|--help)
+        usage
+        break
+        ;;
+      -*)
+        echo "error: unrecognized flag \"${1}\"" >&2
+        usage
+        exit 1
+        ;;
+      *)
+        set_project "${1}"
+        break
+        ;;
+    esac
+  done
+
+  shift $(($OPTIND - 1))
 }
 
 main "$@"
