@@ -135,7 +135,7 @@ rename_project() {
       exit 1
     fi
   fi
-  mv $GCLOUDCONF/configurations/config_{${old_name},${new_name}}
+  mv $GCLOUDCONF/configurations/config_{"${old_name}","${new_name}"}
   echo "Renamed ${old_name} to ${DARKBG}${YELLOW}${new_name}${NORMAL}" >&2
   gcloud config configurations activate "${new_name}"
 }
@@ -211,7 +211,7 @@ main() {
     esac
   done
 
-  shift $(($OPTIND - 1))
+  shift $((OPTIND - 1))
 }
 
 main "$@"
