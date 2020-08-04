@@ -36,6 +36,7 @@ USAGE:
   gcloudctx                              : list the projects
   gcloudctx <NAME>                       : switch to project <NAME>
   gcloudctx -                            : switch to the previous project
+  gcloudctx -c/--create <NAME>           : create context with project <NAME>
   gcloudctx <NEW_NAME>=<NAME>            : rename project <NAME> to <NEW_NAME>
   gcloudctx -f/--force <NEW_NAME>=<NAME> : force renaming of project <NAME> to <NEW_NAME>
                                            when <NEW_NAME> already exists
